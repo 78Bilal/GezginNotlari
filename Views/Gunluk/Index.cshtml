@@ -1,0 +1,105 @@
+@model IEnumerable<SeyahatGunlugu.Models.GunlukModel>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Anasayfa";
+    var isAdmin = HttpContextAccessor.HttpContext?.Session.GetString("Admin") != null;
+}
+
+<!-- Hero Section -->
+<section class="hero-section text-center py-5 mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; margin-top: 2rem;">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3" style="font-family: 'Poppins', sans-serif;">GezginNotları</h1>
+        <p class="lead fs-4">Yolculuklardan küçük notlar, büyük anılar.</p>
+    </div>
+</section>
+
+<!-- Admin için Yeni Günlük Butonu -->
+@if (isAdmin)
+{
+    <div class="text-center mb-4">
+        <a asp-action="Create" class="btn btn-primary btn-lg px-4">
+            <i class="bi bi-plus-circle"></i> + Yeni Günlük
+        </a>
+    </div>
+}
+
+<!-- Günlükler Grid -->
+@if (Model != null && Model.Any())
+{
+    <div class="row g-4">
+        @foreach (var gunluk in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm h-100 border-0" style="transition: transform 0.3s ease, box-shadow 0.3s ease; border-radius: 15px; overflow: hidden;">
+                    <div class="card-img-wrapper" style="height: 250px; overflow: hidden;">
+                        @if (!string.IsNullOrEmpty(gunluk.ResimYolu))
+                        {
+                            <img src="~/uploads/@gunluk.ResimYolu" class="card-img-top" alt="@gunluk.Baslik" style="height: 100%; width: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                        }
+                        else
+                        {
+                            <div class="bg-secondary d-flex align-items-center justify-content-center" style="height: 100%;">
+                                <i class="bi bi-image text-white" style="font-size: 3rem;"></i>
+                            </div>
+                        }
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold mb-2">@gunluk.Baslik</h5>
+                        <p class="text-muted small mb-2">
+                            <i class="bi bi-calendar3"></i> @gunluk.Tarih.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                        </p>
+                        <p class="card-text text-muted flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                            @(string.IsNullOrEmpty(gunluk.Not) ? "Açıklama yok" : gunluk.Not)
+                        </p>
+                        <div class="mt-auto pt-3">
+                            <a asp-action="Details" asp-route-id="@gunluk.Id" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                                <i class="bi bi-eye"></i> Detaylar
+                            </a>
+                            @if (isAdmin)
+                            {
+                                <div class="btn-group w-100" role="group">
+                                    <a asp-action="Edit" asp-route-id="@gunluk.Id" class="btn btn-outline-warning btn-sm">
+                                        <i class="bi bi-pencil"></i> Düzenle
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@gunluk.Id" method="post" class="d-inline flex-grow-1" onsubmit="return confirm('Bu günlüğü silmek istediğinize emin misiniz?');">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                                            <i class="bi bi-trash"></i> Sil
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="text-center py-5">
+        <i class="bi bi-journal-text" style="font-size: 4rem; color: var(--text-muted);"></i>
+        <p class="text-muted mt-3">Henüz günlük eklenmemiş.</p>
+        @if (isAdmin)
+        {
+            <a asp-action="Create" class="btn btn-primary mt-2">İlk Günlüğü Ekle</a>
+        }
+    </div>
+}
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px var(--card-hover-shadow) !important;
+    }
+    
+    .card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+    
+    .card-img-wrapper {
+        background-color: var(--bg-secondary);
+    }
+</style>

@@ -1,0 +1,79 @@
+@model SeyahatGunlugu.Models.GunlukModel
+
+@{
+    ViewData["Title"] = "Günlüğü Düzenle";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg border-0" style="border-radius: 15px;">
+            <div class="card-header bg-warning text-dark text-center py-3" style="border-radius: 15px 15px 0 0;">
+                <h3 class="mb-0">
+                    <i class="bi bi-pencil-square"></i> Günlüğü Düzenle
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Edit" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="mb-3">
+                        <label asp-for="Baslik" class="form-label fw-semibold">
+                            <i class="bi bi-bookmark"></i> Başlık
+                        </label>
+                        <input asp-for="Baslik" class="form-control form-control-lg" />
+                        <span asp-validation-for="Baslik" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Not" class="form-label fw-semibold">
+                            <i class="bi bi-journal-text"></i> Notlar
+                        </label>
+                        <textarea asp-for="Not" class="form-control" rows="6"></textarea>
+                        <span asp-validation-for="Not" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Tarih" class="form-label fw-semibold">
+                            <i class="bi bi-calendar3"></i> Tarih
+                        </label>
+                        <input asp-for="Tarih" type="date" class="form-control form-control-lg" />
+                        <span asp-validation-for="Tarih" class="text-danger"></span>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.ResimYolu))
+                    {
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-image"></i> Mevcut Görsel
+                            </label>
+                            <div class="text-center">
+                                <img src="~/uploads/@Model.ResimYolu" alt="Mevcut Görsel" class="img-thumbnail shadow-sm" style="max-height: 250px; border-radius: 10px;" />
+                            </div>
+                        </div>
+                    }
+
+                    <div class="mb-4">
+                        <label for="Resim" class="form-label fw-semibold">
+                            <i class="bi bi-upload"></i> Yeni Görsel Yükle (İsteğe Bağlı)
+                        </label>
+                        <input type="file" name="Resim" id="Resim" class="form-control form-control-lg" accept="image/*" />
+                        <small class="text-muted">Yeni görsel yüklerseniz mevcut görsel değiştirilecektir.</small>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-x-circle"></i> İptal
+                        </a>
+                        <button type="submit" class="btn btn-warning btn-lg">
+                            <i class="bi bi-check-circle"></i> Güncelle
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

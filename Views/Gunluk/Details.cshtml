@@ -1,0 +1,53 @@
+@model SeyahatGunlugu.Models.GunlukModel
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Detaylar";
+    var isAdmin = HttpContextAccessor.HttpContext?.Session.GetString("Admin") != null;
+}
+
+<div class="card mx-auto shadow-lg border-0" style="max-width: 900px; border-radius: 15px; overflow: hidden;">
+    @if (!string.IsNullOrEmpty(Model.ResimYolu))
+    {
+        <img src="~/uploads/@Model.ResimYolu" class="card-img-top" alt="@Model.Baslik" style="height: 450px; object-fit: cover;">
+    }
+    else
+    {
+        <div class="bg-secondary d-flex align-items-center justify-content-center" style="height: 450px;">
+            <i class="bi bi-image text-white" style="font-size: 5rem;"></i>
+        </div>
+    }
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+                <h2 class="card-title mb-2" style="font-weight: 700;">@Model.Baslik</h2>
+                <p class="text-muted mb-0">
+                    <i class="bi bi-calendar3"></i> @Model.Tarih.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                </p>
+            </div>
+        </div>
+        <hr style="border-color: var(--border-color);">
+        <div class="card-text" style="line-height: 1.8; font-size: 1.1rem;">
+            @if (string.IsNullOrEmpty(Model.Not))
+            {
+                <p class="text-muted fst-italic">Açıklama eklenmemiş.</p>
+            }
+            else
+            {
+                <p style="white-space: pre-wrap;">@Model.Not</p>
+            }
+        </div>
+        <div class="mt-4 pt-3 border-top">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Geri Dön
+            </a>
+            @if (isAdmin)
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning ms-2">
+                    <i class="bi bi-pencil"></i> Düzenle
+                </a>
+            }
+        </div>
+    </div>
+</div>
