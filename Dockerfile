@@ -1,17 +1,22 @@
 # Build aşaması
-FROM ://microsoft.com AS build-env
-WORKDIR /app
+FROM ://microsoft.com AS build
+WORKDIR /src
 
-# Proje dosyalarını kopyala ve restore et
-COPY *.csproj ./
+# Proje dosyanızı kopyalayın (Proje adınızın GezginNotlari olduğunu varsayıyorum)
+COPY ["GezginNotlari.csproj", "./"]
 RUN dotnet restore
 
-# Kaynak kodları kopyala ve yayınla (publish)
-COPY . ./
-RUN dotnet publish -c Release -o out
+# Tüm dosyaları kopyalayıp yayınlayın
+COPY . .
+RUN dotnet publish -c Release -o /app
 
 # Çalıştırma aşaması
-FROM ://microsoft.com
+FROM ://microsoft.com AS runtime
 WORKDIR /app
-COPY --from=build-env /app/out .
+COPY --from=build /app .
+
+# Uygulamanızın portunu belirtin (ASP.NET 8+ varsayılanı 8080'dir)
+EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8080
+
 ENTRYPOINT ["dotnet", "GezginNotlari.dll"]
