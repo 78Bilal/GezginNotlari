@@ -3,7 +3,7 @@ FROM ://microsoft.com AS build
 WORKDIR /src
 
 # Proje dosyanızı kopyalayın (Proje adınızın GezginNotlari olduğunu varsayıyorum)
-COPY ["GezginNotlari.csproj", "./"]
+COPY ["Seyahat_Gunlugu.csproj", "./"]
 RUN dotnet restore
 
 # Tüm dosyaları kopyalayıp yayınlayın
@@ -19,4 +19,4 @@ COPY --from=build /app .
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
-ENTRYPOINT ["dotnet", "GezginNotlari.dll"]
+ENTRYPOINT ["dotnet", "Seyahat_Gunlugu.dll"]
